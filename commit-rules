@@ -35,3 +35,25 @@ run_step() {
   echo "$output" | sed -r 's/(.*)/  \1/'
   return 1
 }
+
+
+find_conf() {
+  path="$(realpath "$1")"
+  conf="$path/.commit-rules"
+
+  if [ -e "$conf" ]; then
+    echo "$conf"
+    return 0
+  fi
+
+  if [ "$path" == "/" ]; then
+    return 1
+  fi
+
+  find_conf "$path/.."
+}
+
+
+read_conf() {
+  sed -rn 's/^([0-9A-Za-z -_]+):\s*(.+)/\1\t\2/p' "$1"
+}
