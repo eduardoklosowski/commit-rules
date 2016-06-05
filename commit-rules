@@ -57,3 +57,23 @@ find_conf() {
 read_conf() {
   sed -rn 's/^([0-9A-Za-z -_]+):\s*(.+)/\1\t\2/p' "$1"
 }
+
+
+run() {
+  if ! conf="$(find_conf .)"; then
+    echo "Arquivo de configuração não encontrado!"
+    return 1
+  fi
+
+  while IFS="$(echo -ne "\t")" read name prog; do
+    if ! run_step "$name" "$prog"; then
+      return 1
+    fi
+  done < <(read_conf "$conf")
+  return 0
+}
+
+
+# Run
+
+run
