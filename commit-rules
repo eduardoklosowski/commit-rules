@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Lib
+
+print_title() {
+  tput bold
+  echo -n "$1: "
+  tput sgr0
+}
+
+
+print_success() {
+  tput setaf 2
+  echo 'OK'
+  tput sgr0
+}
+
+
+print_error() {
+  tput setaf 1
+  echo 'ERR'
+  tput sgr0
+}
+
+
+run_step() {
+  print_title "$1"
+
+  if output="$(bash -c "$2" 2>&1)"; then
+    print_success
+    return 0
+  fi
+
+  print_error
+  echo "$output" | sed -r 's/(.*)/  \1/'
+  return 1
+}
